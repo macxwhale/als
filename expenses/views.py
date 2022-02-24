@@ -71,11 +71,25 @@ def add_expense(request):
         # category = request.POST['category']
         category = Category.objects.get(id=request.POST['category'])
 
-        float_sum = Float.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+      
 
+        # Check if amount is greater than allocated float or float balance
+        float_sum = Float.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+        expense_sum = Expense.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+        balance = float_sum - expense_sum
         if decimal.Decimal(amount) > float_sum:
-            messages.error(request, 'Expense cannot be more than the allocated amount of ' + str(float_sum))
+            messages.error(request, 'Expense amount cannot be more than the allocated amount of ' + str(float_sum))
             return render(request, 'expenses/add_expense.html', context)
+        
+        elif decimal.Decimal(amount) > expense_sum:
+            messages.error(request, 'Expense amount cannot be more than the float balance of ' + str(balance))
+            return render(request, 'expenses/add_expense.html', context)
+    
+
+        if decimal.Decimal(amount) > balance:
+            messages.error(request, 'Expense cannot be more than the allocated amount of ' + str(balance))
+            return render(request, 'expenses/add_expense.html', context)
+       
 
         if not date:
             messages.error(request, 'date is required')
