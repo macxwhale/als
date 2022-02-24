@@ -31,3 +31,14 @@ class Expense(models.Model):
     # to sort order
     class Meta:
         ordering: ['-date', ]
+
+# Create your models here.
+class Float(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    float_name = models.TextField(default=None)
+    date = models.DateTimeField()
+    description = models.TextField()
+    amount = models.DecimalField(max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.category

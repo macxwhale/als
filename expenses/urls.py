@@ -10,5 +10,11 @@ urlpatterns = [
     path('expense-delete/<int:id>', views.delete_expense, name="expense-delete"),
     path('search-expenses', csrf_exempt(views.search_expenses), name="search_expenses"),
     path('expense_category_summary', views.expense_category_summary, name="expense_category_summary"),
-    path('stats', views.stats_view, name="stats")
+
+    path('stats', views.stats_view, name="stats"),
+
+    path('float', views.float, name="float"),
+    path('add-float', views.add_float, name="add-float"),
+    path('edit-float/<int:id>', views.float_edit, name="edit-float"),
+    path('float-delete/<int:id>', views.delete_float, name="float-delete"),
 ]

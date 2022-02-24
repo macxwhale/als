@@ -5,20 +5,20 @@
     <div class="col-md-10">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'expenses'%}">Expenses</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Edit Expense</li>
+          <li class="breadcrumb-item"><a href="{% url 'float'%}">Floats</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit Float</li>
         </ol>
       </nav>
     </div>
 
     <div class="col-md-2">
-      <a href="{% url 'expense-delete' expense.id %}" class="btn btn-danger btn-sm">Delete</a>
+      <a href="{% url 'float-delete' float.id %}" class="btn btn-danger btn-sm">Delete</a>
     </div>
   </div>
 
         <div class="card">
             <div class="card-body">
-                <form action="{% url 'expense-edit' expense.id %}" method="post">
+                <form action="{% url 'edit-float' float.id %}" method="post">
                 {% include 'partials/_messages.html' %}
                 {% csrf_token %}
                 <div class="form-group">
@@ -27,8 +27,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="">Expense Name</label>
-                    <input type="text" class="form-control form-control-sm" name="expense_name" value="{{values.expense_name}}">
+                    <label for="">Float Name</label>
+                    <input type="text" class="form-control form-control-sm" name="float_name" value="{{values.float_name}}">
                 </div>
 
                 <div class="form-group">
@@ -38,15 +38,16 @@
                 <div class="form-group">
                     <label for="">Category</label>
                     <select class="form-control" name="category">
-                        <option selected name="category" value="{{values.category.id}}">{{values.category}}</option>
+                        <option selected name="category" value="{{values.category.id}}">{{values.category.name}}</option>
                         {% for category in categories %}
-                          <option name="category" value="{{category.id}}">{{category.name}}</option>
+                        <option name="category" value="{{category.id}}">{{category.name}}</option>
+
                         {% endfor  %}
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="">Date of Expense</label>
-                    <input type="date" class="form-control form-control-sm" name="expense_date">
+                    <label for="">Date</label>
+                    <input type="date" class="form-control form-control-sm" name="float_date">
                 </div>
 
                     <input type="submit" value="Update" class="btn btn-primary btn-primary-sm"/>
