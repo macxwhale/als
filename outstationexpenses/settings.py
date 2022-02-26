@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-y4xj)*vfwa2tw9cyq*eyif(#jff)s-=9o#9##jp!^qy5nmp+qx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['als-ke.herokuapp.com']
 
 # Application definition
 
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'outstationexpenses.wsgi.application'
 # }
 # }
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'aslexpenses',
@@ -91,6 +91,19 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+ """
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'us-cdbr-east-05.cleardb.net',
+        'USER': 'b1df1002929fde',
+        'NAME': 'heroku_1cf98780440a033',
+        'PASSWORD': 'abf2e77c',
+    }
+}
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
