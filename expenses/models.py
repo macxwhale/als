@@ -23,7 +23,7 @@ class Expense(models.Model):
     description = models.TextField()
     expense_name = models.TextField(default=None)
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.category

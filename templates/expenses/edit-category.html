@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-10">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'category'%}">Category</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-2">
+      <a href="{% url 'category-delete' category.id %}" class="btn btn-danger btn-sm">Delete</a>
+    </div>
+  </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form action="{% url 'edit-category' category.id %}" method="post">
+                {% include 'partials/_messages.html' %}
+                {% csrf_token %}
+             
+                <div class="form-group">
+                    <label for="">Category Name</label>
+                    <input type="text" class="form-control form-control-sm" name="category_name" value="{{values.name}}">
+                </div>
+
+                    <input type="submit" value="Update" class="btn btn-primary btn-primary-sm"/>
+                </form>
+            </div>
+        </div>
+
+</div>
+
+{% endblock %}

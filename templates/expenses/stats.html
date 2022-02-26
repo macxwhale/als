@@ -6,6 +6,7 @@
 {% block content %}
 <div class="container mt-4">
   <div class="row">
+
     <div class="col-md-10">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -24,6 +25,31 @@
     </div>
 
   </div>
+
+  <div class="app-table">
+    <table class="table table-stripped table-hover">
+    <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount USD (CURRENCY)</th>
+          <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for ce in category_expenses  %}
+    <tr>
+      <td>{{ ce.name }}</td>
+      <td>{{ ce.category_expense_sum }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+    </tbody>
+  </table>
+</div>
 
  <div class="row">
 <div class="col-md-8">

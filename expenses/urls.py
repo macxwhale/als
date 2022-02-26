@@ -17,4 +17,10 @@ urlpatterns = [
     path('add-float', views.add_float, name="add-float"),
     path('edit-float/<int:id>', views.float_edit, name="edit-float"),
     path('float-delete/<int:id>', views.delete_float, name="float-delete"),
+
+    path('category', views.category, name="category"),
+    path('add-category', views.add_category, name="add-category"),
+    path('edit-category/<int:id>', views.category_edit, name="edit-category"),
+    path('category-delete/<int:id>', views.delete_category, name="category-delete"),
+
 ]
