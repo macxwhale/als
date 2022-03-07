@@ -40,9 +40,10 @@
       <thead>
           <tr>
             <th>Category</th>
-            <th>Float Name</th>
             <th>Description</th>
             <th>Date</th>
+            <th>Created On</th>
+            <th>Created By</th>
             <th>Amount USD (CURRENCY)</th>
             <th></th>
           </tr>
@@ -53,9 +54,10 @@
       {% for floats in page_obj  %}
       <tr>
         <td>{{floats.category}}</td>
-        <td>{{floats.float_name}}</td>
         <td>{{floats.description}}</td>
         <td>{{floats.date}}</td>
+        <td>{{floats.created_on}}</td>
+        <td>{{floats.created_by}}</td>
         <td>{{floats.amount}}</td>
 
         <td>
@@ -77,9 +79,10 @@
       <thead>
       <tr>
         <th>Category</th>
-        <th>Float Name</th>
         <th>Description</th>
         <th>Date</th> 
+        <th>Created On</th> 
+        <th>Created By</th> 
         <th>Amount ({{CURRENCY}})</th>
         <th></th>
       </tr>

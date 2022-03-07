@@ -1,5 +1,4 @@
-import imp
-from multiprocessing import context
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Category, Expense, Float
@@ -9,11 +8,9 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
-import datetime
 from django.db.models import Count, Sum, F
-import decimal
-
-
+from django.db import connection
+from .functions import dictfetchall
 
 def search_expenses(request):
     if request.method == 'POST':
@@ -29,11 +26,16 @@ def search_expenses(request):
         data = expenses.values()
         return JsonResponse(list(data), safe=False)
 
+def index(request):
+    context = {
+     
+    }
+    return render(request, 'expenses/index.html', context)
 
 @login_required(login_url='/authentication/login')
-def index(request):
+def expense(request):
     categories = Category.objects.all()
-    expenses = Expense.objects.filter(owner=request.user).order_by('-date')
+    expenses = Expense.objects.filter(created_by=request.user).order_by('-date')
     paginator = Paginator(expenses, 20)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
@@ -42,7 +44,7 @@ def index(request):
         'expenses': expenses,
         'page_obj': page_obj,
     }
-    return render(request, 'expenses/index.html', context)
+    return render(request, 'expenses/expense.html', context)
 
 
 @login_required(login_url='/authentication/login')
@@ -70,13 +72,36 @@ def add_expense(request):
         description = request.POST['description']
         expense_name = request.POST['expense_name']
         date = request.POST['expense_date']
-        # category = request.POST['category']
         category = Category.objects.get(id=request.POST['category'])
+
+
+        if not date:
+            messages.error(request, 'date is required')
+            return render(request, 'expenses/add_expense.html', context)
+
+        if not expense_name:
+            messages.error(request, 'name is required')
+            return render(request, 'expenses/add_expense.html', context)
+        if not description:
+            messages.error(request, 'description is required')
+            return render(request, 'expenses/add_expense.html', context)
+        # if no error we save the data into database
+        # we use the expense model
+        # create the expense
+        Expense.objects.create(created_by=request.user, amount=amount, date=date,
+                            category=category, expense_name=expense_name, description=description)
+
+        # saving the expense in the database after creating it
+        messages.success(request, 'Expense saved successfully')
+
+        # redirect to the expense page to see the expenses
+        return redirect('expenses')
+
 
       
 
         # Check if amount is greater than allocated float or float balance
-        float_sum = Float.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
+        """ float_sum = Float.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum']
         expense_sum = Expense.objects.filter(category=category).aggregate(Sum('amount'))['amount__sum'] or 0
     
 
@@ -108,14 +133,14 @@ def add_expense(request):
             # if no error we save the data into database
             # we use the expense model
             # create the expense
-            Expense.objects.create(owner=request.user, amount=amount, date=date,
+            Expense.objects.create(created_on=request.user, amount=amount, date=date,
                                 category=category, expense_name=expense_name, description=description)
 
             # saving the expense in the database after creating it
             messages.success(request, 'Expense saved successfully')
 
             # redirect to the expense page to see the expenses
-            return redirect('expenses')
+            return redirect('expenses') """
 
 
 @login_required(login_url='/authentication/login')
@@ -158,7 +183,6 @@ def expense_edit(request, id):
             messages.error(request, 'Expense name is required')
             return render(request, 'expenses/edit-expense.html', context)
 
-        expense.owner = request.user
         expense.amount = amount
         expense.date = date
         expense.category = category
@@ -178,52 +202,30 @@ def delete_expense(request, id):
     return redirect('expenses')
 
 
-def expense_category_summary(request):
-    todays_date = datetime.date.today()
-    one_months_ago = todays_date - datetime.timedelta(days=30 * 1)
-    expenses = Expense.objects.filter(owner=request.user,
-                                      date__gte=one_months_ago, date__lte=todays_date)
-    # empty dictionary
-    finalrep = {}
-
-    def get_category(expense):
-        return expense.category
-
-    # we use map function
-    category_list = list(set(map(get_category, expenses)))
-
-    def get_expense_category_amount(category):
-        amount = 0
-        filtered_by_category = expenses.filter(category=category)
-
-        for item in filtered_by_category:
-            amount += item.amount
-        return amount
-
-    for x in expenses:
-        for y in category_list:
-            finalrep[y] = get_expense_category_amount(y)
-
-    return JsonResponse({'expense_category_data': finalrep}, safe=False)
-
-
-def stats_view(request):
-    category_expenses = Expense.objects.annotate(name=F('category__name')).filter(amount__gt=0).values('name').annotate(category_expense_count=Count('id'), category_expense_sum=Sum('amount'))
+def expense_summary(request):
+    category_expenses = Expense.objects.select_related('float').annotate(name=F('category__name')).filter(amount__gt=0).values('name').annotate(category_expense_count=Count('id'), category_expense_sum=Sum('amount'))
     context = { 'category_expenses': category_expenses }
-    return render(request, 'expenses/stats.html', context)
+    return render(request, 'expenses/expense_summary.html', context)
 
+
+def float_vs_expense(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT expenses_category.name, (SELECT COALESCE(SUM(expenses_float.amount), 0) from expenses_float WHERE expenses_float.category_id = expenses_category.id) as float_sum, (SELECT COALESCE(SUM(expenses_expense.amount), 0) from expenses_expense WHERE expenses_expense.category_id =  expenses_category.id) as expense_sum FROM expenses_category")
+        results = dictfetchall(cursor)
+    context = { 'results': results }
+    return render(request, 'expenses/float_vs_expense.html', context)
+
+""" Float """
 def float(request):
     floats = Float.objects.all()
     paginator = Paginator(floats, 20)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
-
     context = {
         'floats': floats,
         'page_obj': page_obj,
     }
     return render(request, 'expenses/float.html', context)
-
 
 def add_float(request):
     categories = Category.objects.all()
@@ -244,18 +246,15 @@ def add_float(request):
             return render(request, 'expenses/add_float.html', context)
 
         description = request.POST['description']
-        float_name = request.POST['float_name']
+    
         date = request.POST['float_date']
-        # category = request.POST['category']
+       
         category = Category.objects.get(id=request.POST['category'])
 
         if not date:
             messages.error(request, 'date is required')
             return render(request, 'expenses/add_float.html', context)
 
-        if not float_name:
-            messages.error(request, 'name is required')
-            return render(request, 'expenses/add_float.html', context)
         if not description:
             messages.error(request, 'description is required')
             return render(request, 'expenses/add_float.html', context)
@@ -263,15 +262,13 @@ def add_float(request):
         # we use the expense model
         # create the expense
         Float.objects.create(amount=amount, date=date,
-                               category=category, float_name=float_name, description=description)
+                               category=category, description=description,  created_by=request.user)
 
         # saving the expense in the database after creating it
         messages.success(request, 'Float saved successfully')
 
         # redirect to the expense page to see the expenses
         return redirect('float')
-
-
 
 def float_edit(request, id):
     float = Float.objects.get(pk=id)
@@ -289,7 +286,7 @@ def float_edit(request, id):
         if not amount:
             messages.error(request, 'Amount is required')
             return render(request, 'expenses/edit-float.html', context)
-        float_name = request.POST['float_name']
+      
         description = request.POST['description']
         date = request.POST['float_date']
         category = Category.objects.get(id=request.POST['category'])
@@ -302,23 +299,17 @@ def float_edit(request, id):
             messages.error(request, 'description is required')
             return render(request, 'expenses/edit-float.html', context)
 
-        if not float_name:
-            messages.error(request, 'Float name is required')
-            return render(request, 'expenses/edit-float.html', context)
-
-    #   expense.owner = request.user
         float.amount = amount
         float.date = date
         float.category = category
         float.description = description
-        float.float_name = float_name
+        float.created_by = float.created_by
+        float.created_on = float.created_on
 
         float.save()
         messages.success(request, 'Float updated  successfully')
 
         return redirect('float')
-
-
 
 def delete_float(request, id):
     float = Float.objects.get(pk=id)
@@ -326,14 +317,17 @@ def delete_float(request, id):
     messages.success(request, 'Float deleted')
     return redirect('float')
 
+""" Float End """
+
+""" Category """
+
 def category(request):
     categories = Category.objects.all()
     paginator = Paginator(categories, 20)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
-
     context = {
-        'expenses': categories,
+        'categories': categories,
         'page_obj': page_obj,
     }
     return render(request, 'expenses/category.html', context)
@@ -351,7 +345,6 @@ def add_category(request):
       
 
         category_name = request.POST['category_name']
-       
 
         if not category_name:
             messages.error(request, 'name is required')
@@ -360,7 +353,7 @@ def add_category(request):
         # if no error we save the data into database
         # we use the expense model
         # create the expense
-        Category.objects.create(name=category_name)
+        Category.objects.create(name=category_name, created_by=request.user)
 
         # saving the expense in the database after creating it
         messages.success(request, 'Category saved successfully')
@@ -386,14 +379,14 @@ def category_edit(request, id):
             messages.error(request, 'Category name is required')
             return render(request, 'expenses/edit-category.html', context)
 
-    #   expense.owner = request.user
         category.name = category_name
+        category.created_by = category.created_by
+        category.created_on = category.created_on
 
         category.save()
         messages.success(request, 'Category updated  successfully')
 
         return redirect('category')
-
     
 def delete_category(request, id):
     category = Category.objects.get(pk=id)
@@ -401,3 +394,4 @@ def delete_category(request, id):
     messages.success(request, 'Category deleted')
     return redirect('category')
 
+""" Category End """

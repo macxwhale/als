@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-y4xj)*vfwa2tw9cyq*eyif(#jff)s-=9o#9##jp!^qy5nmp+qx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['als-ke.herokuapp.com']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'expenses',
+    'mathfilters'
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'outstationexpenses.wsgi.application'
 # }
 # }
 
-""" DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'aslexpenses',
@@ -91,8 +92,8 @@ WSGI_APPLICATION = 'outstationexpenses.wsgi.application'
         'PORT': '3306',
     }
 }
- """
-DATABASES = {
+
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'us-cdbr-east-05.cleardb.net',
@@ -101,7 +102,7 @@ DATABASES = {
         'PASSWORD': 'abf2e77c',
     }
 }
-
+ """
 
 
 

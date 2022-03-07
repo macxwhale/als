@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="container">
-    {% include 'partials/_messages.html' %} {% if expenses.count %}
+    {% include 'partials/_messages.html' %} {% if categories.count %}
     <div class="row">
       <div class="col-md-8"></div>
       <div class="col-md-4">
@@ -40,6 +40,8 @@
       <thead>
           <tr>
             <th>Category Name</th>
+            <th>Created By</th>
+            <th>Created On</th>
             <th></th>
           </tr>
       </thead>
@@ -49,6 +51,8 @@
       {% for category in page_obj  %}
       <tr>
         <td>{{category.name}}</td>
+        <td>{{category.created_by}}</td>
+        <td>{{category.created_on}}</td>
 
         <td>
          <a href="{% url 'edit-category' category.id %}" class="btn btn-secondary btn-sm">Edit</a>
