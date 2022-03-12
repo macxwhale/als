@@ -1,0 +1,81 @@
+{% extends "als_base.html" %}
+
+{% block content %}
+
+{% load static%}
+
+ <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            
+            <!-- Header-->
+            {% include "partials/als_header.html" %}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {% include "partials/als_left_sidebar.html" %}
+            <!-- Left Sidebar End -->
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                         <!-- start page title -->
+                         {% include "partials/als_page_title.html" %}
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Validation type</h4>
+                                        <p class="card-title-desc">Parsley is a javascript form validation
+                                            library. It helps you provide your users with feedback on their form
+                                            submission before sending it to your server.</p>
+
+                                            {% include 'partials/als_messages.html' %} 
+                                            
+                                        <form class="custom-validation" action="" method="POST">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label>Station Name</label>
+                                                <input type="text" class="form-control" required placeholder="Type something" name="station_name" value="{{values.name}}" />
+                                            </div>
+        
+                            
+                                            <div class="mb-0">
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary waves-effect waves-light me-1">
+                                                        Submit
+                                                    </button>
+                                                    
+                                                    <a href="{% url 'stations' %}">
+                                                   
+                                                            Cancel
+                                                     
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+                                   
+        
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+                        <!-- end row -->
+                    </div>
+                  </div>  
+            </div>
+        
+        </div>
+        <!-- END layout-wrapper -->
+
+{% endblock %}
