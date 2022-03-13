@@ -320,6 +320,9 @@ def float_vs_expense(request):
     return render(request, 'expense/reports/float-vs-expense.html', context)
 
 def user_expense(request):
-    user_expense = Expense.objects.annotate(username=F('created_by__username')).values('username').annotate(user_expense_sum=Sum('amount'))
+    # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    
+    # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
+    user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)

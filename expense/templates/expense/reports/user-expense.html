@@ -63,6 +63,7 @@
                                             <thead>
                                             <tr>
                                                 <th>User</th>
+                                                <th>Station</th>
                                                 <th>Expense Sum</th>
                                                                                            
                                               
@@ -75,6 +76,7 @@
                                             {% for ue in user_expense  %}
                                             <tr>
                                                 <td>{{ ue.username }}</td>
+                                                <td>{{ ue.name }}</td>
                                                 <td>{{ ue.user_expense_sum }}</td>
                                             </tr>
                                             {% endfor %}
