@@ -28,6 +28,13 @@
                 </li>
 
                 <li>
+                    <a href="{% url 'users' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="{% url 'stations' %}" class=" waves-effect">
                         <i class="ri-calendar-2-line"></i>
                         <span>Stations</span>
@@ -49,7 +56,7 @@
                 </li>
     
                 
-                <li class="menu-title">Reports</li>
+                <li class="menu-title">Daily Reports</li>
                 
                 <li>
                     <a href="{% url 'float-vs-expense' %}" class=" waves-effect">
@@ -62,6 +69,29 @@
                     <a href="{% url 'user-expense' %}" class=" waves-effect">
                         <i class="ri-calendar-2-line"></i>
                         <span>User Expense</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'all-user-expense' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>All User Expense</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">Advanced Reports</li>
+
+                <li>
+                    <a href="{% url 'user-expense-advanced-reports' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>User Expense</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'float-vs-expense-advanced-reports' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Float vs Expense</span>
                     </a>
                 </li>
 

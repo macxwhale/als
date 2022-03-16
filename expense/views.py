@@ -12,13 +12,21 @@ from django.http import JsonResponse
 from django.db.models import Count, Sum, F
 from django.db import connection
 from django.utils.dateparse import parse_datetime
-
+import datetime
 from .functions import dictfetchall
+from django.http import FileResponse, Http404
 
 
 def index(request):
     context = {}
     return render(request, 'expense/index.html', context)
+
+""" User """
+def users(request):
+    users = User.objects.all()
+    context = {'users': users }
+    return render(request, 'expense/users/users.html', context)
+""" User End """
 
 """ Station """
 def stations(request):
@@ -228,6 +236,7 @@ def add_expense(request):
     
         date = request.POST['expense_date']
 
+        reciept = request.FILES['reciept']
 
         station = Station.objects.get(id=request.POST['station'])
 
@@ -244,7 +253,7 @@ def add_expense(request):
         # we use the expense model
         # create the expense
         Expense.objects.create(created_by=request.user, amount=amount, date=date,
-                            station=station, expense_name=expense_name, description=description)
+                            station=station, expense_name=expense_name, description=description, reciept=reciept)
 
         # saving the expense in the database after creating it
         messages.success(request, 'Expense saved successfully')
@@ -280,6 +289,9 @@ def edit_expense(request, id):
         
         station = Station.objects.get(id=request.POST['station'])
 
+       
+        reciept = request.FILES['reciept']
+       
         if not date:
             messages.error(request, 'date is required')
             return render(request, 'expense/expense/edit-expense.html', context)
@@ -297,6 +309,7 @@ def edit_expense(request, id):
         expense.station = station
         expense.description = description
         expense.expense_name = expense_name
+        expense.reciept = reciept
 
         expense.save()
         messages.success(request, 'Expense updated  successfully')
@@ -323,6 +336,70 @@ def user_expense(request):
     # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     
     # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
+    
     user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)
+
+def all_user_expense(request):
+    # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    
+    # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
+    
+    user_expense = Expense.objects.values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    context = { 'user_expense': user_expense }
+    return render(request, 'expense/reports/user-expense.html', context)
+
+def user_expense_advanced_reports(request):
+    users = User.objects.all()
+    context = { 'users': users }
+    # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    
+    # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
+    # user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+
+
+    print(request.POST)
+
+    if request.method == 'POST':
+        user = request.POST['user']
+        start = request.POST['start']
+        start_date = datetime.datetime.strptime(start, "%m/%d/%Y").strftime("%Y-%m-%d") 
+        end = request.POST['end']
+        end_date = datetime.datetime.strptime(end, "%m/%d/%Y").strftime("%Y-%m-%d") 
+
+        if user:
+            if start_date == end_date:
+                messages.error(request, 'Start Date and End Date are similar')
+                return render(request, 'expense/reports/user-advanced-reports.html', context)
+            else:
+                user_expense = Expense.objects.filter(created_by=user, date__range=(start_date, end_date)).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+                context = { 'user_expense': user_expense,'users': users}
+                return render(request, 'expense/reports/user-advanced-reports.html', context)
+
+     
+    return render(request, 'expense/reports/user-advanced-reports.html', context)
+
+def float_vs_expense_advanced_reports(request):
+    stations = Station.objects.all()
+    context = { 'stations': stations }
+    # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    
+    # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
+    # user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    # datetime.datetime.strptime("23 Mar, 2022", "%d/%m/%Y").strftime("%Y-%m-%d")
+
+    print(request.POST)
+
+    if request.method == 'POST':
+        station = request.POST['station']
+        if station:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT id, expense_station.name, (SELECT COALESCE(SUM(expense_float.amount), 0) from expense_float WHERE expense_float.station_id = expense_station.id) as float_sum, (SELECT COALESCE(SUM(expense_expense.amount), 0) from expense_expense WHERE expense_expense.station_id =  expense_station.id) as expense_sum FROM expense_station WHERE id = %s", [station])
+                results = dictfetchall(cursor)
+            context = { 'results': results, 'stations': stations }
+
+        
+    return render(request, 'expense/reports/float-advanced-reports.html', context)
+
+""" Reports End """

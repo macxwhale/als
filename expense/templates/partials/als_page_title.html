@@ -6,7 +6,38 @@
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                   
+
+                {% if request.path|slice:"1:" == 'stations' %}
                     <li class="breadcrumb-item active"><a href="{% url request.path|slice:'1:' %}">{{ request.path|slice:"1:"  }}</a></li>
+                    <li class="breadcrumb-item active">
+                        <a href="{% url 'add-station' %}">
+                           add-{{ request.path|slice:"1:" }}
+                        </a>
+                    </li>
+                {% elif request.path|slice:"1:" == 'float' %}
+                    <li class="breadcrumb-item active"><a href="{% url request.path|slice:'1:' %}">{{ request.path|slice:"1:"  }}</a></li>
+                    <li class="breadcrumb-item active">
+                        <a href="{% url 'add-float' %}">
+                        add-{{ request.path|slice:"1:" }}
+                        </a>
+                    </li>
+                {% elif request.path|slice:"1:" == 'expense' %}
+                    <li class="breadcrumb-item active"><a href="{% url request.path|slice:'1:' %}">{{ request.path|slice:"1:"  }}</a></li>
+                    <li class="breadcrumb-item active">
+                        <a href="{% url 'add-expense' %}">
+                        add-{{ request.path|slice:"1:" }}
+                        </a>
+                    </li>
+                {% elif request.path|slice:"1:" == 'users' %}
+                    <li class="breadcrumb-item active"><a href="{% url request.path|slice:'1:' %}">{{ request.path|slice:"1:"  }}</a></li>
+                    <li class="breadcrumb-item active">
+                        <a href="">
+                        add-{{ request.path|slice:"1:" }}
+                        </a>
+                    </li>
+                {% endif %}
+                    
                 </ol>
             </div>
 

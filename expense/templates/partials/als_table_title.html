@@ -1,2 +1,39 @@
-<h4 class="card-title">{{ request.path|slice:"1:" }}</h4>
-<p class="card-title-desc">All {{ request.path|slice:"1:"  }}</p>
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="card-title">all {{ request.path|slice:"1:" }}</h4> 
+
+            <div class="page-title-right">
+                <div class="button-items text-center mt-4">
+
+                {% if request.path|slice:"1:" == 'stations'%}    
+                    <a href="{% url 'add-station' %}">
+                        <button type="button" class="btn btn-primary waves-effect waves-light btn-rounded">
+                        Add Station <i class="ri-arrow-right-line align-middle ms-2"></i> 
+                        </button>
+                    </a>
+                {% elif request.path|slice:"1:" == 'float'%}    
+                    <a href="{% url 'add-float' %}">
+                        <button type="button" class="btn btn-primary waves-effect waves-light btn-rounded">
+                        Add Float <i class="ri-arrow-right-line align-middle ms-2"></i> 
+                        </button>
+                    </a>
+                {% elif request.path|slice:"1:" == 'expense'%}    
+                    <a href="{% url 'add-expense' %}">
+                        <button type="button" class="btn btn-primary waves-effect waves-light btn-rounded">
+                        Add Expense <i class="ri-arrow-right-line align-middle ms-2"></i> 
+                        </button>
+                    </a>
+                {% elif request.path|slice:"1:" == 'users'%}    
+                    <a href="">
+                        <button type="button" class="btn btn-primary waves-effect waves-light btn-rounded">
+                        Add Users <i class="ri-arrow-right-line align-middle ms-2"></i> 
+                        </button>
+                    </a>
+                {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

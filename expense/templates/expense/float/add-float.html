@@ -30,14 +30,13 @@
                         <!-- end page title -->
 
                         <div class="row">
-                            <div class="col-xl-6">
+                            <div class="col-xl-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title">Validation type</h4>
+                                        <!-- <h4 class="card-title">Validation type</h4>
                                         <p class="card-title-desc">Parsley is a javascript form validation
                                             library. It helps you provide your users with feedback on their form
-                                            submission before sending it to your server.</p>
-
+                                            submission before sending it to your server.</p>-->
                                             {% include 'partials/als_messages.html' %} 
                                             
                                       
@@ -46,21 +45,27 @@
                                             {% csrf_token %}
                                             <div class="row">
 
-                                              
+
                                                 <div class="mb-3">
-                                                    <label for="validationCustom03" class="form-label">Station</label>
-                                                    <select class="form-select" id="validationCustom03" required  name="station">
-                                                            <option value="" selected disabled>Choose...</option>
+                                                
+                                                    <label  for="validationTooltip01" class="form-label">Station</label>
+                                                    <select class="form-control select2" id="validationTooltip01" name="station" required>
+                                                        <option value="" selected disabled>Choose...</option>
+                                                        <optgroup label="AVAILABLE STATION">
 
                                                             {% for s in stations %}
-                                                            <option value="{{s.id}}">{{s.name}}</option>
+                                                            <option name="category" value="{{s.id}}">{{s.name}}</option>
                                     
                                                             {% endfor  %}
+
+                                            
+                                                        </optgroup>
+                                                       
                                                     </select>
+
                                                     <div class="invalid-tooltip">
                                                         Please select a station
                                                     </div>
-    
                                                 </div>
                                               
 
@@ -109,9 +114,21 @@
                                                 </div>
                                             </div>
                                            
-                                            <div>
-        
-                                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                            <div class="mb-0">
+                                                <div>
+                                                    <button type="submit" class="btn btn-success waves-effect waves-light">
+                                                        <i class="ri-check-line align-middle me-2"></i> Submit
+                                                    </button>
+                                                    
+                                                    <a href="{% url 'float' %}">
+                                                   
+                                                        <button type="button" class="btn btn-warning waves-effect waves-light">
+                                                            <i class="ri-error-warning-line align-middle me-2"></i> Cancel
+                                                        </button>
+                                                     
+                                                    </a>
+                                                </div>
+
                                             </div>
                                         </form>                                   
         

@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from datetime import date
 from decimal import Decimal
+from .functions import upload_name
+import os
 
 
 class Station(models.Model):
@@ -27,11 +29,12 @@ class Expense(models.Model):
     description = models.TextField()
     expense_name = models.TextField(default=None)
     station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="expense_station")
+    reciept = models.FileField(upload_to=upload_name)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.category
+        return self.station
 
     # to sort order
     class Meta:
