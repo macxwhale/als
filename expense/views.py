@@ -12,12 +12,28 @@ from django.http import JsonResponse
 from django.db.models import Count, Sum, F
 from django.db import connection
 from django.utils.dateparse import parse_datetime
-import datetime
 from .functions import dictfetchall
 from django.http import FileResponse, Http404
-
+from datetime import datetime, timedelta, time
+from django.db.models.functions import Coalesce
 
 def index(request):
+
+    """ Get the current date """
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    today_start = datetime.combine(today, time())
+    today_end = datetime.combine(tomorrow, time())
+    
+    month = today + timedelta(30)
+    m_today_start = datetime.combine(today, time())
+    m_today_end = datetime.combine(month, time())
+
+    """ Get the current month """
+    this_month = datetime.now().month
+    last_month = datetime.now().month - 1
+
+
     """ User count """
     u_count = User.objects.count()
     
@@ -32,13 +48,21 @@ def index(request):
 
     """ Latest Expense """
     l_expense = Expense.objects.all()[:7]
-    
+
+    """ This/Last month's float """
+    f_this_month = Float.objects.filter(created_on__month=this_month).aggregate(Sum('amount'))['amount__sum']
+    f_last_month = Float.objects.filter(created_on__month=last_month).aggregate(Sum('amount'))['amount__sum']
+
+
+       
     context = {
         'u_count':u_count,
         's_count':s_count,
         't_float':t_float,
         't_expense':t_expense,
-        'l_expense':l_expense
+        'l_expense':l_expense,
+        'f_this_month':f_this_month,
+        'f_last_month':f_last_month,
         }
     return render(request, 'expense/index.html', context)
 
