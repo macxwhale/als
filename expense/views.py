@@ -18,7 +18,28 @@ from django.http import FileResponse, Http404
 
 
 def index(request):
-    context = {}
+    """ User count """
+    u_count = User.objects.count()
+    
+    """ Station count """
+    s_count = Station.objects.count()
+
+    """ Total Float """
+    t_float = Float.objects.aggregate(Sum('amount'))['amount__sum']
+
+    """ Total Expense """
+    t_expense = Expense.objects.aggregate(Sum('amount'))['amount__sum']
+
+    """ Latest Expense """
+    l_expense = Expense.objects.all()[:7]
+    
+    context = {
+        'u_count':u_count,
+        's_count':s_count,
+        't_float':t_float,
+        't_expense':t_expense,
+        'l_expense':l_expense
+        }
     return render(request, 'expense/index.html', context)
 
 """ User """
