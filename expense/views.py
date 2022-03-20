@@ -16,7 +16,7 @@ from .functions import dictfetchall
 from django.http import FileResponse, Http404
 from datetime import datetime, timedelta, time
 from django.db.models.functions import Coalesce
-
+import json
 def index(request):
 
     """ Get the current date """
@@ -54,6 +54,8 @@ def index(request):
     f_last_month = Float.objects.filter(created_on__month=last_month).aggregate(Sum('amount'))['amount__sum']
 
 
+    float_per_station = Float.objects.values(name=F('station__name')).annotate(station_float_sum=Sum('amount'))
+
        
     context = {
         'u_count':u_count,
@@ -63,6 +65,7 @@ def index(request):
         'l_expense':l_expense,
         'f_this_month':f_this_month,
         'f_last_month':f_last_month,
+        'float_per_station':float_per_station,
         }
     return render(request, 'expense/index.html', context)
 
@@ -409,9 +412,9 @@ def user_expense_advanced_reports(request):
     if request.method == 'POST':
         user = request.POST['user']
         start = request.POST['start']
-        start_date = datetime.datetime.strptime(start, "%m/%d/%Y").strftime("%Y-%m-%d") 
+        start_date = datetime.strptime(start, "%m/%d/%Y").strftime("%Y-%m-%d") 
         end = request.POST['end']
-        end_date = datetime.datetime.strptime(end, "%m/%d/%Y").strftime("%Y-%m-%d") 
+        end_date = datetime.strptime(end, "%m/%d/%Y").strftime("%Y-%m-%d") 
 
         if user:
             if start_date == end_date:

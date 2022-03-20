@@ -28,12 +28,13 @@ SECRET_KEY = 'django-insecure-x02hq0v)0v-&^p8bvhfswx+1u#7$_6h2=g5g7l+u8w*0e%sa6^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "als-ke.herokuapp.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "als-ke.herokuapp.com", "192.168.0.251"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.humanize',
     'mathfilters',
     'expense.apps.ExpenseConfig',
     'django.contrib.admin',
