@@ -1,0 +1,102 @@
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+
+// Total Float Per Station
+var options = {
+    chart: { type: 'bar'},
+
+    series: [{
+        name: 'Float',
+        data:{{ fs_data | safe }}
+    }],
+
+    xaxis: { categories: {{ fs_labels | safe  }}}
+    }
+
+    var chart = new ApexCharts(document.querySelector("#bar-float-station"), options);
+  
+    chart.render();
+
+
+// Total Expense Per Station  
+
+    var options = {
+    chart: { type: 'bar'},
+
+    series: [{
+        name: 'Expense',
+        data:{{ es_data | safe }}
+    }],
+
+    xaxis: { categories: {{ es_labels | safe  }}}
+    }
+
+    var chart = new ApexCharts(document.querySelector("#bar-expense-station"), options);
+  
+    chart.render();
+
+
+  // Total Float vs Total Expense        
+    var options = {
+          series: [{ name: 'Float',    
+          data: {{ fve_float_sum | safe }}
+        }, { name: 'Expense',
+          data: {{ fve_expense_sum | safe }}
+        }],
+          chart: {
+          type: 'bar',
+          height: 430
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            dataLabels: {
+              position: 'top',
+            },
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          offsetX: -6,
+          style: {
+            fontSize: '12px',
+            colors: ['#fff']
+          }
+        },
+        stroke: {
+          show: true,
+          width: 1,
+          colors: ['#fff']
+        },
+        tooltip: {
+          shared: true,
+          intersect: false
+        },
+        xaxis: {
+          categories: {{ fve_labels | safe }},
+        },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#float-vs-expense"), options);
+        chart.render();
+
+    // Total User Expense
+
+    var options = {
+    chart: { type: 'bar'},
+
+    series: [{
+        name: 'Expense',
+        data:{{ ue5_expense_sum | safe }}
+    }],
+
+    xaxis: { categories: {{ ue5_labels | safe  }}}
+    }
+
+    var chart = new ApexCharts(document.querySelector("#user-expense-station"), options);
+  
+    chart.render();
+
+
+
+</script>

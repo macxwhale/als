@@ -6,6 +6,7 @@
 
 {% load mathfilters%}
 
+{% load humanize %}
  <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
         <!-- Begin page -->
@@ -71,9 +72,9 @@
                                             <tr>
                                                 <td>{{ ef.id }}</td>
                                                 <td>{{ ef.name }}</td>
-                                                <td>{{ ef.float_sum }}</td>
-                                                <td>{{ ef.expense_sum }}</td>
-                                                <td>{{ ef.float_sum|sub:ef.expense_sum }}</td>
+                                                <td>{{ ef.float_sum | intcomma }}</td>
+                                                <td>{{ ef.expense_sum | intcomma }}</td>
+                                                <td>{{ ef.float_sum|sub:ef.expense_sum | intcomma }}</td>
                                                
                                                
                                             </tr>

@@ -6,17 +6,13 @@ from .models import *
 # Create your views here.
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
-import json
-from django.http import JsonResponse
 from django.db.models import Count, Sum, F
 from django.db import connection
-from django.utils.dateparse import parse_datetime
 from .functions import dictfetchall
-from django.http import FileResponse, Http404
 from datetime import datetime, timedelta, time
 from django.db.models.functions import Coalesce
-import json
+from django.utils.timezone import make_aware
+
 def index(request):
 
     """ Get the current date """
@@ -53,10 +49,56 @@ def index(request):
     f_this_month = Float.objects.filter(created_on__month=this_month).aggregate(Sum('amount'))['amount__sum']
     f_last_month = Float.objects.filter(created_on__month=last_month).aggregate(Sum('amount'))['amount__sum']
 
+    """ This/Last month's Expense """
+    e_this_month = Expense.objects.filter(created_on__month=this_month).aggregate(Sum('amount'))['amount__sum']
+    e_last_month = Expense.objects.filter(created_on__month=last_month).aggregate(Sum('amount'))['amount__sum']
 
-    float_per_station = Float.objects.values(name=F('station__name')).annotate(station_float_sum=Sum('amount'))
 
-       
+    """ Float Charts """
+    fs_labels = []
+    fs_data = []
+
+    float_per_station_sum = Float.objects.values(name=F('station__name')).annotate(station_float_sum=Sum('amount')).order_by('-station_float_sum')[:5]
+
+    for fss in float_per_station_sum:
+        fs_labels.append(fss['name'])
+        fs_data.append(str(fss['station_float_sum']))
+    
+    """ Expense Charts """
+    es_labels = []
+    es_data = []
+
+    expense_per_station_sum = Expense.objects.values(name=F('station__name')).annotate(station_expense_sum=Sum('amount')).order_by('-station_expense_sum')[:5]
+
+    for ess in expense_per_station_sum:
+        es_labels.append(ess['name'])
+        es_data.append(str(ess['station_expense_sum']))
+
+    """ Float vs Expense """   
+    fve_labels = []
+    fve_float_sum = []
+    fve_expense_sum = []
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, expense_station.name, (SELECT COALESCE(SUM(expense_float.amount), 0) from expense_float WHERE expense_float.station_id = expense_station.id) as float_sum, (SELECT COALESCE(SUM(expense_expense.amount), 0) from expense_expense WHERE expense_expense.station_id =  expense_station.id) as expense_sum FROM expense_station ORDER BY expense_sum DESC LIMIT 5")
+        results = dictfetchall(cursor)
+    
+    for fve in results:
+        fve_labels.append(fve['name'])
+        fve_float_sum.append(str(fve['float_sum']))
+        fve_expense_sum.append(str(fve['expense_sum']))
+    
+    """ User vs Float """
+    ue5_labels = []
+    ue5_expense_sum = []
+
+    user_expense_per_station_sum = Expense.objects.values(name=F('created_by__username')).annotate(user_expense_sum=Sum('amount')).order_by('-user_expense_sum')[:5]
+
+    for ue5 in user_expense_per_station_sum:
+        ue5_labels.append(ue5['name'])
+        ue5_expense_sum.append(str(ue5['user_expense_sum']))
+   
+
     context = {
         'u_count':u_count,
         's_count':s_count,
@@ -65,7 +107,17 @@ def index(request):
         'l_expense':l_expense,
         'f_this_month':f_this_month,
         'f_last_month':f_last_month,
-        'float_per_station':float_per_station,
+        'e_this_month':e_this_month,
+        'e_last_month':e_last_month,
+        'fs_labels': fs_labels,
+        'fs_data': fs_data,
+        'es_labels': es_labels,
+        'es_data': es_data,
+        'fve_labels':fve_labels,
+        'fve_float_sum':fve_float_sum,
+        'fve_expense_sum':fve_expense_sum,
+        'ue5_labels': ue5_labels,
+        'ue5_expense_sum':  ue5_expense_sum
         }
     return render(request, 'expense/index.html', context)
 
@@ -385,7 +437,7 @@ def user_expense(request):
     
     # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
     
-    user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount')).order_by('-user_expense_sum')
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)
 
@@ -412,9 +464,9 @@ def user_expense_advanced_reports(request):
     if request.method == 'POST':
         user = request.POST['user']
         start = request.POST['start']
-        start_date = datetime.strptime(start, "%m/%d/%Y").strftime("%Y-%m-%d") 
+        start_date = datetime.strptime(start, "%m/%d/%Y").strftime("%Y-%m-%d")
         end = request.POST['end']
-        end_date = datetime.strptime(end, "%m/%d/%Y").strftime("%Y-%m-%d") 
+        end_date = datetime.strptime(end, "%m/%d/%Y").strftime("%Y-%m-%d")
 
         if user:
             if start_date == end_date:
@@ -422,7 +474,7 @@ def user_expense_advanced_reports(request):
                 return render(request, 'expense/reports/user-advanced-reports.html', context)
             else:
                 user_expense = Expense.objects.filter(created_by=user, date__range=(start_date, end_date)).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
-                context = { 'user_expense': user_expense,'users': users}
+                context = { 'user_expense': user_expense,'users': users }
                 return render(request, 'expense/reports/user-advanced-reports.html', context)
 
      

@@ -6,6 +6,8 @@
 
 {% load mathfilters%}
 
+{% load humanize %}
+
  <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
         <!-- Begin page -->
@@ -63,7 +65,7 @@
                                             <tr>
                                                 <td>{{ ue.username }}</td>
                                                 <td>{{ ue.name }}</td>
-                                                <td>{{ ue.user_expense_sum }}</td>
+                                                <td>{{ ue.user_expense_sum | intcomma }}</td>
                                             </tr>
                                             {% endfor %}
                                            

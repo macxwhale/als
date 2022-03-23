@@ -4,6 +4,8 @@
 
 {% load static%}
 
+{% load humanize %}
+
  <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
         <!-- Begin page -->
@@ -61,7 +63,7 @@
                                             <tr>
                                                 <td>{{ e.station.name }}</td>
                                                 <td>{{ e.expense_name }}</td>
-                                                <td>{{ e.amount }}</td>
+                                                <td>{{ e.amount | intcomma }}</td>
                                                 <td>{{ e.description }}</td>
                                                 <td>{{ e.date }}</td>
                                                 <td>{{ e.created_by }}</td>
