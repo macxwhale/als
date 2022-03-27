@@ -22,11 +22,14 @@ urlpatterns = [
     path('edit-expense/<int:id>', views.edit_expense, name="edit-expense"),
     path('delete-expense/<int:id>', views.delete_expense, name="delete-expense"),
 
+    # User
+    path('users', views.users, name="users"),
+    path('add-user', views.add_user, name="add-user"),
+
     # Reports
     path('float-vs-expense', views.float_vs_expense, name="float-vs-expense"),
     path('user-expense', views.user_expense, name="user-expense"),
     path('all-user-expense', views.all_user_expense, name="all-user-expense"),
-    path('users', views.users, name="users"),
     path('user-expense-advanced-reports', views.user_expense_advanced_reports, name="user-expense-advanced-reports"),
     path('float-vs-expense-advanced-reports', views.float_vs_expense_advanced_reports, name="float-vs-expense-advanced-reports"),
 ]

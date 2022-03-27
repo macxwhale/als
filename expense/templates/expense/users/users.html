@@ -4,6 +4,8 @@
 
 {% load static%}
 
+{% load group_tags %}
+
  <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
         <!-- Begin page -->
@@ -46,7 +48,7 @@
                                                 <th>First Name</th>
                                                 <th>Last Name</th>
                                                 <th>Email</th>
-                                                <th>Date Joined</th>
+                                                <th>Role</th>
                                                 <th>Last Login</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -61,7 +63,19 @@
                                                 <td>{{ u.first_name }}</td>
                                                 <td>{{ u.last_name }}</td>
                                                 <td>{{ u.email }}</td>
-                                                <td>{{ u.date_joined }}</td>
+                                                <td>
+                                                    {% if u|has_group:"SystemAdmin" %} 
+                                                        System Admin 
+                                                    {% elif u|has_group:"SystemAccountant" %} 
+                                                        System Accountant
+                                                    {% elif u|has_group:"SystemUser" %} 
+                                                        System User
+                                                    {% else %}
+                                                        No Role
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
                                                 <td>{{ u.last_login }}</td>
                                                 <td>
                                                     <a href="{% url 'users' %}">

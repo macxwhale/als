@@ -12,6 +12,9 @@ from .functions import dictfetchall
 from datetime import datetime, timedelta, time
 from django.db.models.functions import Coalesce
 from django.utils.timezone import make_aware
+from django.contrib.auth.models import Group
+from django.contrib.auth.forms import UserCreationForm
+from .forms import *
 
 def index(request):
 
@@ -120,6 +123,47 @@ def index(request):
         'ue5_expense_sum':  ue5_expense_sum
         }
     return render(request, 'expense/index.html', context)
+
+def add_user(request):
+    form = CreateUserForm()
+    groups = Group.objects.all()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        email = request.POST['email']
+       
+        print('Printing POST:', request.POST)
+        print('Printing Errors:', form.errors )
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists")
+        else:
+            if form.is_valid():
+                user = form.save()
+                user.save()
+            
+                username = form.cleaned_data.get('username')
+                g = form.cleaned_data.get('group')
+            
+                print('selected user role:',g)
+                
+                if g == 'SystemAdmin':
+                    g = Group.objects.get(name='SystemAdmin')
+                    g.user_set.add(user)
+                elif g == 'SystemAccountant':
+                    g = Group.objects.get(name='SystemAccountant')
+                    g.user_set.add(user)
+                elif g == 'SystemUser':
+                    g = Group.objects.get(name='SystemUser')
+                    g.user_set.add(user)
+                else:
+                    messages.error(request,  username + " cannot be added to a group")
+                    return redirect('users')
+
+                messages.success(request,  username + " has been created successfully")
+                return redirect('users')
+
+    
+    context = {'groups': groups, 'form': form}
+    return render(request, 'expense/users/add-user.html', context)
 
 """ User """
 def users(request):

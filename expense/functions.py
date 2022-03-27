@@ -16,3 +16,6 @@ def upload_name(instance, filename):
     return os.path.join('uploads/receipts/', filename)
 
 
+
+
+            
