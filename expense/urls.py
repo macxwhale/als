@@ -25,6 +25,7 @@ urlpatterns = [
     # User
     path('users', views.users, name="users"),
     path('add-user', views.add_user, name="add-user"),
+    path('edit-user/<int:id>', views.edit_user, name="edit-user"),
 
     # Reports
     path('float-vs-expense', views.float_vs_expense, name="float-vs-expense"),

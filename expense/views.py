@@ -165,6 +165,42 @@ def add_user(request):
     context = {'groups': groups, 'form': form}
     return render(request, 'expense/users/add-user.html', context)
 
+def edit_user(request, id):
+    user = User.objects.get(pk=id)
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM `auth_group`")
+        groups = dictfetchall(cursor)
+
+    context = {
+        'groups': groups, 
+        'values': user
+        }
+    
+    if request.method == 'GET':
+        return render(request, 'expense/users/edit-user.html', context)
+
+    if request.method == 'POST':
+        email = request.POST['email']
+        username = request.POST['username']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        g = request.POST['group']
+
+
+        print('selected user role:',g)
+   
+
+        with connection.cursor() as cursor:
+            cursor.execute("call sp_update_user(%s, %s, %s, %s, %s, %s)", (id, username, first_name, last_name, email, g))
+            data = cursor.fetchone()
+            messages.success(request,  username + " has been updated successfully")
+            return redirect('users')
+        
+        
+
+    return render(request, 'expense/users/edit-user.html', context)
+
 """ User """
 def users(request):
     users = User.objects.all()

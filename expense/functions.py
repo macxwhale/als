@@ -15,7 +15,14 @@ def upload_name(instance, filename):
     filename = "%s_%s_%s.%s" % (timezone.now(), instance.station.name, instance.created_by, ext)
     return os.path.join('uploads/receipts/', filename)
 
-
+# USE als_expense;
+# DELIMITER // ;
+# CREATE PROCEDURE `sp_update_user`(IN usr_id INT, IN user_username varchar(20), IN user_first_name  varchar(20), IN user_last_name varchar(20), IN user_email varchar(20), IN g_id INT)
+# BEGIN
+# 	UPDATE auth_user SET username = user_username, first_name = user_first_name, last_name = user_last_name, email = user_email WHERE id = usr_id;
+#     DELETE FROM auth_user_groups WHERE user_id = usr_id;
+#     INSERT INTO auth_user_groups  (user_id, group_id) VALUES (usr_id, g_id);
+# END 
 
 
             

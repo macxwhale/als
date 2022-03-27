@@ -1,0 +1,193 @@
+{% extends "als_base.html" %}
+
+{% block content %}
+
+{% load static %}
+
+{% load group_tags %}
+
+ <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            
+            <!-- Header-->
+            {% include "partials/als_header.html" %}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {% include "partials/als_left_sidebar.html" %}
+            <!-- Left Sidebar End -->
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                         <!-- start page title -->
+                         {% include "partials/als_page_title.html" %}
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card">
+                
+
+                                    <div class="card-body">
+                                       
+        
+                                        {% include 'partials/als_messages.html' %} 
+                                            <form class="custom-validation" novalidate action="" method="POST">
+                                                {% csrf_token %}
+                                            
+                                            <div class="mb-3">
+                                                
+                                                <label  for="validationTooltip01" class="form-label">Role</label>
+                                                <select class="form-control select2" id="validationTooltip01" name="group" required>
+
+                                                    <option value='
+                                                    {% if values|has_group:"SystemAdmin" %} 
+                                                        System Admin 
+                                                    {% elif values|has_group:"SystemAccountant" %} 
+                                                        System Accountant
+                                                    {% elif values|has_group:"SystemUser" %} 
+                                                        System User
+                                                    {% else %}
+                                                        No Role
+                                                    {% endif %}'
+                                                    selected>
+                                                    
+                                                    {% if values|has_group:"SystemAdmin" %} 
+                                                        System Admin 
+                                                    {% elif values|has_group:"SystemAccountant" %} 
+                                                        System Accountant
+                                                    {% elif values|has_group:"SystemUser" %} 
+                                                        System User
+                                                    {% else %}
+                                                        No Role
+                                                    {% endif %}
+                                                
+                                                    </option>
+
+
+
+
+                                                    
+                                                    <optgroup label="ROLES">
+
+                                                        {% for g in groups %}
+                                                        <option value="{{ g.id }}">{{g.name}}</option>
+                                
+                                                        {% endfor  %}
+
+                                        
+                                                    </optgroup>
+                                                   
+                                                </select>
+
+                                
+                                            </div>
+
+
+        
+        
+        
+                                            <div class="mb-3">
+                                                <label>E-Mail</label>
+                                                <div>
+                                                    <input type="email" class="form-control" required name="email"
+                                                            parsley-type="email" placeholder="Enter a valid e-mail" value="{{ values.email }}"/>
+                                                </div>
+
+                                                <div style="color: red;">
+                                                    {{form.errors.email }}
+                                                </div>
+                                            </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label>First Name</label>
+                                                <div>
+                                                    <input data-parsley-type="alphanum" type="text"
+                                                            class="form-control" required name="first_name" value="{{ values.first_name }}"
+                                                            placeholder="Enter alphanumeric value"/>
+                                                </div>
+
+                                                
+                                                <div style="color: red;">
+                                                    {{form.errors.first_name }}
+                                                </div>
+                                            </div>
+
+
+                                            </div>
+                                            <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label>Last Name</label>
+                                                <div>
+                                                    <input data-parsley-type="alphanum" type="text" name="last_name" value="{{ values.last_name }}"
+                                                            class="form-control" required
+                                                            placeholder="Enter alphanumeric value"/>
+                                                </div>
+
+                                                <div style="color: red;">
+                                                    {{form.errors.last_name }}
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Username</label>
+                                            
+                                            <div>
+                                                
+                                                
+                                                <input data-parsley-type="alphanum" type="text" name="username" value="{{ values.username }}"
+                                                        class="form-control" required
+                                                        placeholder="Enter alphanumeric value"/>
+                                            </div>
+
+                                            <div style="color: red;">
+                                                {{form.errors.username }}
+                                            </div>
+                                        </div>
+
+                                      
+
+                                           
+                                            <div class="mb-0">
+                                                <div>
+                                                    <button type="submit" class="btn btn-success waves-effect waves-light">
+                                                        <i class="ri-check-line align-middle me-2"></i> Submit
+                                                    </button>
+                                                    
+                                                    <a href="{% url 'users' %}">
+                                                   
+                                                        <button type="button" class="btn btn-warning waves-effect waves-light">
+                                                            <i class="ri-error-warning-line align-middle me-2"></i> Cancel
+                                                        </button>
+                                                     
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+        
+                                    </div>
+
+                                    
+                                </div>
+                            </div> <!-- end col -->
+                        <!-- end row -->
+                    </div>
+                  </div>  
+            </div>
+        
+        </div>
+        <!-- END layout-wrapper -->
+
+{% endblock %}
