@@ -1,1 +1,45 @@
-<h1>Access Denied</h1>
+{% extends "als_base.html" %}
+
+{% block content %}
+
+{% load static%}
+
+
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            
+            <!-- Header-->
+            {% include "partials/als_header.html" %}
+
+            <!-- ========== Left Sidebar Start ========== -->
+            {% include "partials/als_left_sidebar.html" %}
+            <!-- Left Sidebar End -->
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                         <!-- start page title -->
+                         {% include "partials/als_page_title.html" %}
+                        <!-- end page title -->
+                        <div class="alert alert-info alert-dismissible fade show mb-0" role="alert">
+                            <i class="mdi mdi-alert-circle-outline me-2"></i>
+                            Access Denied! - You are not authorized to view this page
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <!-- end row -->
+                    </div>
+                  </div>  
+            </div>
+        
+        </div>
+        <!-- END layout-wrapper -->
+
+
+{% endblock %}

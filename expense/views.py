@@ -1,4 +1,5 @@
 
+from venv import create
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from pytz import timezone
@@ -44,8 +45,8 @@ def sign_out(request):
 	return redirect('sign-in')
 
 @login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def index(request):
-
     """ Get the current date """
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
@@ -153,11 +154,14 @@ def index(request):
     return render(request, 'expense/index.html', context)
 
 """ User """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin'])
 def users(request):
     users = User.objects.all()
     context = {'users': users }
     return render(request, 'expense/users/users.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin'])
 def add_user(request):
     form = CreateUserForm()
     groups = Group.objects.all()
@@ -198,7 +202,8 @@ def add_user(request):
     
     context = {'groups': groups, 'form': form}
     return render(request, 'expense/users/add-user.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin'])
 def edit_user(request, id):
     user = User.objects.get(pk=id)
 
@@ -245,7 +250,8 @@ def edit_user(request, id):
         
 
     return render(request, 'expense/users/edit-user.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin'])
 def delete_user(request, id):
     with connection.cursor() as cursor:
         cursor.execute("call sp_delete_user(%s)", [id])
@@ -256,11 +262,14 @@ def delete_user(request, id):
 """ User End """
 
 """ Station """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def stations(request):
     stations = Station.objects.all()
     context = {'stations': stations, }
     return render(request, 'expense/station/stations.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def add_station(request):
 
     context = {'values': request.POST }
@@ -287,7 +296,8 @@ def add_station(request):
 
         # redirect to the expense page to see the expenses
         return redirect('stations')
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def edit_station(request, id):
     station = Station.objects.get(pk=id)
 
@@ -315,7 +325,8 @@ def edit_station(request, id):
         messages.success(request, 'Station updated  successfully')
 
         return redirect('stations')
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def delete_station(request, id):
     station = Station.objects.get(pk=id)
     station.delete()
@@ -325,13 +336,16 @@ def delete_station(request, id):
 """ Station """
 
 """ Float """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def float(request):
     floats = Float.objects.all()
     context = {
         'floats': floats,
     }
     return render(request, 'expense/float/float.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def add_float(request):
     stations = Station.objects.all()
     context = {
@@ -377,7 +391,8 @@ def add_float(request):
 
         # redirect to the expense page to see the expenses
         return redirect('float')
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def edit_float(request, id):
     float = Float.objects.get(pk=id)
     stations = Station.objects.exclude(id=float.station.id)
@@ -423,7 +438,8 @@ def edit_float(request, id):
         messages.success(request, 'Float updated  successfully')
 
         return redirect('float')
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def delete_float(request, id):
     float = Float.objects.get(pk=id)
     float.delete()
@@ -432,6 +448,8 @@ def delete_float(request, id):
 """ Float End """
 
 """ Expense """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def expense(request):
     expenses = Expense.objects.all()
     context = {
@@ -439,6 +457,17 @@ def expense(request):
     }
     return render(request, 'expense/expense/expenses.html', context)
 
+""" Expense """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
+def my_expense(request):
+    expenses = Expense.objects.filter(created_by = request.user)
+    context = {
+        'expenses': expenses,
+    }
+    return render(request, 'expense/expense/expenses.html', context)
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
 def add_expense(request):
     stations = Station.objects.all()
     context = {
@@ -486,8 +515,9 @@ def add_expense(request):
         messages.success(request, 'Expense saved successfully')
 
         # redirect to the expense page to see the expenses
-        return redirect('expense')
-
+        return redirect('my-expense')
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
 def edit_expense(request, id):
 
     expense = Expense.objects.get(pk=id)
@@ -542,7 +572,8 @@ def edit_expense(request, id):
         messages.success(request, 'Expense updated  successfully')
 
         return redirect('expense')
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
 def delete_expense(request, id):
     float = Float.objects.get(pk=id)
     float.delete()
@@ -552,13 +583,16 @@ def delete_expense(request, id):
 """ Expense End """
 
 """ Reports """
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def float_vs_expense(request):
     with connection.cursor() as cursor:
         cursor.execute("CALL sp_float_vs_expense_amount")
         results = dictfetchall(cursor)
     context = { 'results': results }
     return render(request, 'expense/reports/float-vs-expense.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
 def user_expense(request):
     # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     
@@ -567,7 +601,8 @@ def user_expense(request):
     user_expense = Expense.objects.filter(created_by=request.user).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount')).order_by('-user_expense_sum')
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def all_user_expense(request):
     """ Get the current date """
     today = datetime.now().date()
@@ -581,7 +616,8 @@ def all_user_expense(request):
     user_expense = Expense.objects.filter(created_on__range=(today_start, today_end)).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def user_expense_advanced_reports(request):
     users = User.objects.all()
     context = { 'users': users }
@@ -611,7 +647,8 @@ def user_expense_advanced_reports(request):
 
      
     return render(request, 'expense/reports/user-advanced-reports.html', context)
-
+@login_required(login_url='sign_in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant'])
 def float_vs_expense_advanced_reports(request):
     stations = Station.objects.all()
     context = { 'stations': stations }

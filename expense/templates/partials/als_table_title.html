@@ -18,7 +18,7 @@
                         Add Float <i class="ri-arrow-right-line align-middle ms-2"></i> 
                         </button>
                     </a>
-                {% elif request.path|slice:"1:" == 'expense'%}    
+                {% elif request.path|slice:"1:" == 'expense' or  request.path|slice:"1:" == 'my-expense'%}    
                     <a href="{% url 'add-expense' %}">
                         <button type="button" class="btn btn-primary waves-effect waves-light btn-rounded">
                         Add Expense <i class="ri-arrow-right-line align-middle ms-2"></i> 
