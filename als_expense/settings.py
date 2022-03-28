@@ -182,7 +182,7 @@ EMAIL_HOST_USER = 'no-reply@bitspaceke.net'
 EMAIL_HOST_PASSWORD = ']2)b=~t5mA*j%)mD'
 
 # Logging
-""" LOGGING = {
+LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
@@ -197,4 +197,3 @@ EMAIL_HOST_PASSWORD = ']2)b=~t5mA*j%)mD'
         },
     },
 }
- """
