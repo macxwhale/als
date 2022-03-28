@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "als-ke.herokuapp.com", "192.168.0.25
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms', # Crispy forms
     'django.contrib.humanize',
     'mathfilters',
     'expense.apps.ExpenseConfig',
@@ -164,7 +165,36 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#SMTP
+DEFAULT_FROM_EMAIL = 'no-reply@bitspaceke.net'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtppro.zoho.com'
+EMAIL_PORT =  587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'no-reply@bitspaceke.net'
+EMAIL_HOST_PASSWORD = ']2)b=~t5mA*j%)mD'
+
+# Logging
+""" LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}
+ """
