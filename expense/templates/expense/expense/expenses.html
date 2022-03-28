@@ -46,8 +46,8 @@
                                             <thead>
                                             <tr>
                                                 <th>Station</th>
-                                                <th>Name</th>
                                                 <th>Amount</th>
+                                                <th>Name</th>
                                                 <th>Description</th>
                                                 <th>Date</th>
                                                 <th>Created By</th>
@@ -62,8 +62,8 @@
                                             {% for e in expenses  %}
                                             <tr>
                                                 <td>{{ e.station.name }}</td>
-                                                <td>{{ e.expense_name }}</td>
                                                 <td>{{ e.amount | intcomma }}</td>
+                                                <td>{{ e.expense_name }}</td>
                                                 <td>{{ e.description }}</td>
                                                 <td>{{ e.date }}</td>
                                                 <td>{{ e.created_by }}</td>

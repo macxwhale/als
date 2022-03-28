@@ -26,3 +26,22 @@ def upload_name(instance, filename):
 
 
             
+# USE als_expense;
+# DELIMITER // ;
+# CREATE PROCEDURE `sp_delete_user` (IN usr_id INT)
+# BEGIN
+# 	DELETE FROM auth_user_groups WHERE user_id = usr_id;
+#     DELETE FROM auth_user WHERE id = usr_id;
+# END
+
+
+# USE als_expense;
+# DELIMITER // ;
+# CREATE PROCEDURE `sp_float_vs_expense_amount` ()
+# BEGIN
+# 	SELECT id, expense_station.name, 
+#     (SELECT COALESCE(SUM(expense_float.amount), 0) from expense_float WHERE expense_float.station_id = expense_station.id) as float_sum, 
+#     (SELECT COALESCE(SUM(expense_expense.amount), 0) from expense_expense WHERE expense_expense.station_id =  expense_station.id AND expense_expense.created_on = DATE(NOW())) 
+#     as expense_sum FROM expense_station; 
+# END
+

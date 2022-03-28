@@ -124,6 +124,12 @@ def index(request):
         }
     return render(request, 'expense/index.html', context)
 
+""" User """
+def users(request):
+    users = User.objects.all()
+    context = {'users': users }
+    return render(request, 'expense/users/users.html', context)
+
 def add_user(request):
     form = CreateUserForm()
     groups = Group.objects.all()
@@ -181,31 +187,44 @@ def edit_user(request, id):
         return render(request, 'expense/users/edit-user.html', context)
 
     if request.method == 'POST':
-        email = request.POST['email']
-        username = request.POST['username']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        g = request.POST['group']
+        e = request.POST['email']
+        u = request.POST['username']
+        usr = User.objects.exclude(pk=id).filter(email=e)
+
+       
+        if User.objects.exclude(pk=id).filter(email=e):
+            messages.error(request, "Email already exists")
+            return render(request, 'expense/users/edit-user.html', context)
+        elif User.objects.exclude(pk=id).filter(username=u):
+            messages.error(request, "Username already exists")
+            return render(request, 'expense/users/edit-user.html', context)
+        else:
+            email = request.POST['email']
+            username = request.POST['username']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            g = request.POST['group']
+
+            print('selected user role:',g)
 
 
-        print('selected user role:',g)
-   
-
-        with connection.cursor() as cursor:
-            cursor.execute("call sp_update_user(%s, %s, %s, %s, %s, %s)", (id, username, first_name, last_name, email, g))
-            data = cursor.fetchone()
-            messages.success(request,  username + " has been updated successfully")
-            return redirect('users')
+            with connection.cursor() as cursor:
+                cursor.execute("call sp_update_user(%s, %s, %s, %s, %s, %s)", (id, username, first_name, last_name, email, g))
+                data = cursor.fetchone()
+                messages.success(request,  username + " has been updated successfully")
+                return redirect('users')
         
         
 
     return render(request, 'expense/users/edit-user.html', context)
 
-""" User """
-def users(request):
-    users = User.objects.all()
-    context = {'users': users }
-    return render(request, 'expense/users/users.html', context)
+def delete_user(request, id):
+    with connection.cursor() as cursor:
+        cursor.execute("call sp_delete_user(%s)", [id])
+        data = cursor.fetchone()
+        messages.success(request, 'User deleted')
+        return redirect('users')
+
 """ User End """
 
 """ Station """
@@ -507,7 +526,7 @@ def delete_expense(request, id):
 """ Reports """
 def float_vs_expense(request):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, expense_station.name, (SELECT COALESCE(SUM(expense_float.amount), 0) from expense_float WHERE expense_float.station_id = expense_station.id) as float_sum, (SELECT COALESCE(SUM(expense_expense.amount), 0) from expense_expense WHERE expense_expense.station_id =  expense_station.id) as expense_sum FROM expense_station")
+        cursor.execute("CALL sp_float_vs_expense_amount")
         results = dictfetchall(cursor)
     context = { 'results': results }
     return render(request, 'expense/reports/float-vs-expense.html', context)
@@ -522,11 +541,16 @@ def user_expense(request):
     return render(request, 'expense/reports/user-expense.html', context)
 
 def all_user_expense(request):
+    """ Get the current date """
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    today_start = datetime.combine(today, time())
+    today_end = datetime.combine(tomorrow, time())
     # user_expense = Expense.objects.annotate(username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     
     # SELECT COALESCE(SUM(amount), 0), station_id from expense_expense as expense_sum WHERE created_by_id = 1 GROUP BY station_id
     
-    user_expense = Expense.objects.values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
+    user_expense = Expense.objects.filter(created_on__range=(today_start, today_end)).values(name=F('station__name'), username=F('created_by__username')).annotate(user_expense_sum=Sum('amount'))
     context = { 'user_expense': user_expense }
     return render(request, 'expense/reports/user-expense.html', context)
 
