@@ -1,4 +1,8 @@
 {% load static %}
+{% load group_tags %}
+
+
+
 <div class="vertical-menu">
 
     <div data-simplebar class="h-100">
@@ -13,12 +17,13 @@
                 <!-- <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span> -->
             </div>
         </div>
-
+{% if request.user|has_group:"SystemAdmin" %}
         <!--- Sidemenu -->
         <div id="sidebar-menu">
+
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title">Menu</li>
+                <li class="menu-title">Menu</li>  
 
                 <li>
                     <a href="{% url 'index' %}" class="waves-effect">
@@ -98,5 +103,115 @@
             </ul>
         </div>
         <!-- Sidebar -->
+{% elif request.user|has_group:"SystemAccountant" %}
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title">Menu</li>  
+
+                <li>
+                    <a href="{% url 'index' %}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'stations' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Stations</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'float' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Floats</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'expense' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Expense</span>
+                    </a>
+                </li>
+
+                
+                <li class="menu-title">Daily Reports</li>
+                
+                <li>
+                    <a href="{% url 'float-vs-expense' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Foat vs Expense</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'user-expense' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>My Expense</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'all-user-expense' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>All User Expense</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">Advanced Reports</li>
+
+                <li>
+                    <a href="{% url 'user-expense-advanced-reports' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>User Expense</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'float-vs-expense-advanced-reports' %}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Float vs Expense</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+{% else %}
+
+ <!--- Sidemenu -->
+ <div id="sidebar-menu">
+
+    <!-- Left Menu Start -->
+    <ul class="metismenu list-unstyled" id="side-menu">
+        <li class="menu-title">Menu</li>  
+
+        <li>
+            <a href="{% url 'expense' %}" class=" waves-effect">
+                <i class="ri-calendar-2-line"></i>
+                <span>Expense</span>
+            </a>
+        </li>
+
+        
+        <li class="menu-title">Daily Reports</li>
+        
+        <li>
+            <a href="{% url 'user-expense' %}" class=" waves-effect">
+                <i class="ri-calendar-2-line"></i>
+                <span>My Expense</span>
+            </a>
+        </li>
+
+    </ul>
+</div>
+<!-- Sidebar -->
+{% endif %}
+
     </div>
 </div>

@@ -3,7 +3,10 @@ from . import views
 from django.conf.urls import url
 
 urlpatterns = [
+    path('sign-in', views.sign_in, name="sign-in"),
+    path('sign-out/', views.sign_out, name="sign-out"),
     path('', views.index, name="index"),
+
     # Stations
     path('stations', views.stations, name="stations"),
     path('add-station', views.add_station, name="add-station"),
