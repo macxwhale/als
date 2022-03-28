@@ -3,99 +3,115 @@
 
 // Total Float Per Station
 var options = {
-    chart: { type: 'bar', foreColor: '#000000'},
-
-    series: [{
-        name: 'Float',
-        data:{{ fs_data | safe }}
-    }],
-
+    chart: { type: 'bar',  height: 350, toolbar: { show: !1 }},
+    plotOptions: { bar: { horizontal: !0  }},
+    dataLabels: { enabled: !1 },
+    series: [{ name: 'Float', data:{{ fs_data | safe }}}],
+    colors: ["#1cbb8c"],
+    grid: { borderColor: "#f1f1f1", padding: { bottom: 10 }},
     xaxis: { categories: {{ fs_labels | safe  }}}
-    }
-
-    var chart = new ApexCharts(document.querySelector("#bar-float-station"), options);
-  
-    chart.render();
+}
+var chart = new ApexCharts(document.querySelector("#bar-float-station"), options);
+chart.render();
 
 
 // Total Expense Per Station  
-
-    var options = {
-    chart: { type: 'bar'},
-
-    series: [{
-        name: 'Expense',
-        data:{{ es_data | safe }}
-    }],
-
+var options = {
+    chart: { type: 'bar',  height: 350, toolbar: { show: !1 }},
+    plotOptions: { bar: { horizontal: !0  }},
+    dataLabels: { enabled: !1 },
+    series: [{ name: 'Expense', data:{{ es_data | safe }}}],
+    colors: ["#1cbb8c"],
+    grid: { borderColor: "#f1f1f1", padding: { bottom: 10 }},
     xaxis: { categories: {{ es_labels | safe  }}}
+}
+var chart = new ApexCharts(document.querySelector("#bar-expense-station"), options);
+chart.render();
+
+// Total Float vs Total Expense        
+var options = {
+  chart: { height: 350, type: "line", stacked: !1, toolbar: { show: !1 }},
+  stroke: { width: [0, 2, 4], curve: "smooth" },
+  plotOptions: { bar: { columnWidth: "50%" } },
+  colors: ["#1cbb8c", "#fcb92c"],
+  series: [{ 
+    name: 'Float', 
+    type: "column", 
+    data: {{ fve_float_sum | safe }}
+  }, { 
+    name: 'Expense', 
+    type: "area", 
+    data: {{ fve_expense_sum | safe }}
+  }],
+  fill: {
+    opacity: [.85, .25, 1],
+    gradient: {
+      inverseColors: !1,
+      shade: "light",
+      type: "vertical",
+      opacityFrom: .85,
+      opacityTo: .55,
+      stops: [0, 100, 100, 100]
     }
-
-    var chart = new ApexCharts(document.querySelector("#bar-expense-station"), options);
+  },
   
-    chart.render();
+  markers: { size: 0},
+ 
+  yaxis: { title: { text: "Amount" } },
 
+  tooltip: { shared: !0, intersect: !1, y: { formatter: function(e) {  return "$ " + e + " Amount" } } },
+  grid: { borderColor: "#f1f1f1", padding: { bottom: 10 } },  
+  legend: {  offsetY: 7 },
+  xaxis: { categories: {{ fve_labels | safe }}, },
+}
 
-  // Total Float vs Total Expense        
-    var options = {
-          series: [{ name: 'Float',    
-          data: {{ fve_float_sum | safe }}
-        }, { name: 'Expense',
-          data: {{ fve_expense_sum | safe }}
-        }],
-          chart: {
-          type: 'bar',
-          height: 430
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            dataLabels: {
-              position: 'top',
-            },
-          }
-        },
-        dataLabels: {
-          enabled: true,
-          offsetX: -6,
-          style: {
-            fontSize: '12px',
-            colors: ['#fff']
-          }
-        },
-        stroke: {
-          show: true,
-          width: 1,
-          colors: ['#fff']
-        },
-        tooltip: {
-          shared: true,
-          intersect: false
-        },
-        xaxis: {
-          categories: {{ fve_labels | safe }},
-        },
-        };
+var chart = new ApexCharts(document.querySelector("#float-vs-expense"), options);
+chart.render();
 
-        var chart = new ApexCharts(document.querySelector("#float-vs-expense"), options);
-        chart.render();
+// Total User Expense
 
-    // Total User Expense
+var options = {
+  chart: { height: 350, type: "bar", toolbar: { show: !1 }},
+  plotOptions: { bar: { dataLabels: { position: "top" } } },
+  dataLabels: { enabled: !0, formatter: function(e) { return "$" + e  }, offsetY: -20, style: {  ntSize: "12px", colors: ["#304758"] }    },
 
-    var options = {
-    chart: { type: 'bar'},
+  series: [{ name: 'Expense', data:{{ ue5_expense_sum | safe }} }],
+  colors: ["#fcb92c"],
+  grid: { borderColor: "#f1f1f1", padding: { bottom: 10 }},
 
-    series: [{
-        name: 'Expense',
-        data:{{ ue5_expense_sum | safe }}
-    }],
-
-    xaxis: { categories: {{ ue5_labels | safe  }}}
+  xaxis: { 
+    categories: {{ ue5_labels | safe  }},
+    position: "top",
+    labels: { offsetY: -18 },
+    axisBorder: { show: !1 },
+    axisTicks: { show: !1 },
+  },
+  crosshairs: {
+    fill: {
+      type: "gradient",
+      gradient: {
+        colorFrom: "#D8E3F0",
+        colorTo: "#BED1E6",
+        stops: [0, 100],
+        opacityFrom: .4,
+        opacityTo: .5
+      }
     }
-
-    var chart = new ApexCharts(document.querySelector("#user-expense-station"), options);
+  },
+  tooltip: {
+    enabled: !0,
+    offsetY: -35
+  },
   
-    chart.render();
+  
+
+  
+  
+}
+
+var chart = new ApexCharts(document.querySelector("#user-expense-station"), options);
+
+chart.render();
 
 
 

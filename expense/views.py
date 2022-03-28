@@ -75,7 +75,7 @@ def index(request):
     t_expense = Expense.objects.aggregate(Sum('amount'))['amount__sum']
 
     """ Latest Expense """
-    l_expense = Expense.objects.all()[:7]
+    l_expense = Expense.objects.all().order_by('-created_on')[:7]
 
     """ This/Last month's float """
     f_this_month = Float.objects.filter(created_on__month=this_month).aggregate(Sum('amount'))['amount__sum']
