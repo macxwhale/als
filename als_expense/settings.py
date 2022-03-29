@@ -115,7 +115,7 @@ else:
     }
 
     DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
-    FTP_STORAGE_LOCATION = 'ftp://maxx@nivishefoundation.org:5xtxUq6K@nivishefoundation.org:21/home/nivishef/nivishefoundation.org/maxx'
+    FTP_STORAGE_LOCATION = 'ftp://maxx@nivishefoundation.org:5xtxUq6K@nivishefoundation.org:21'
    
 
 # Password validation
