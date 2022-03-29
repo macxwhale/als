@@ -1,24 +1,41 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Password Reset</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-</head>
-<body>
-  <div class="container">
 
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="/sign-in">Home</a>
-          </li>
-        </ul>
-    </nav>
-    <br>
-    {% block content %}
-    {% endblock %}
-  </div>
-</body>
+    <head>
+        
+        <meta charset="utf-8" />
+        <title>ALS Outstation</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+        <meta content="Themesdesign" name="author" />
+       
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static '/images/favicon.ico' %}">
+
+        
+        <!-- Bootstrap Css -->
+        <link href="{% static '/assets/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="{% static '/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="{% static '/assets/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+      
+
+
+
+    </head>
+
+    <body data-topbar="dark">
+    
+          <!-- Start Containerbar -->
+          {% block content %}
+          {% endblock %}
+          <!-- End Containerbar -->
+
+    
+    </body>
+
 </html>

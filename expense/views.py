@@ -160,6 +160,7 @@ def users(request):
     users = User.objects.all()
     context = {'users': users }
     return render(request, 'expense/users/users.html', context)
+
 @login_required(login_url='sign-in')
 @allowed_users(allowed_roles=['SystemAdmin'])
 def add_user(request):
@@ -202,6 +203,7 @@ def add_user(request):
     
     context = {'groups': groups, 'form': form}
     return render(request, 'expense/users/add-user.html', context)
+
 @login_required(login_url='sign-in')
 @allowed_users(allowed_roles=['SystemAdmin'])
 def edit_user(request, id):
@@ -222,9 +224,7 @@ def edit_user(request, id):
     if request.method == 'POST':
         e = request.POST['email']
         u = request.POST['username']
-        usr = User.objects.exclude(pk=id).filter(email=e)
-
-       
+             
         if User.objects.exclude(pk=id).filter(email=e):
             messages.error(request, "Email already exists")
             return render(request, 'expense/users/edit-user.html', context)
@@ -246,10 +246,47 @@ def edit_user(request, id):
                 data = cursor.fetchone()
                 messages.success(request,  username + " has been updated successfully")
                 return redirect('users')
-        
-        
 
     return render(request, 'expense/users/edit-user.html', context)
+
+@login_required(login_url='sign-in')
+@allowed_users(allowed_roles=['SystemAdmin', 'SystemAccountant', 'SystemUser'])
+def profile(request, id):
+    user = User.objects.get(pk=id)
+
+    if request.user.id == id:
+        context = { 'values': user }
+
+        if request.method == 'GET':
+            return render(request, 'expense/users/profile.html', context)
+
+        if request.method == 'POST':
+            e = request.POST['email']
+            u = request.POST['username']
+                
+            if User.objects.exclude(pk=id).filter(email=e):
+                messages.error(request, "Email already exists")
+                return render(request, 'expense/users/profile.html', context)
+            elif User.objects.exclude(pk=id).filter(username=u):
+                messages.error(request, "Username already exists")
+                return render(request, 'expense/users/profile.html', context)
+            else:
+                email = request.POST['email']
+                username = request.POST['username']
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+            
+                with connection.cursor() as cursor:
+                    cursor.execute("call sp_update_profile(%s, %s, %s, %s, %s)", (id, username, first_name, last_name, email))
+                    data = cursor.fetchone()
+                    messages.success(request,  username + " has been updated successfully")
+                    return redirect('profile', id)
+        
+        return render(request, 'expense/users/profile.html', context)
+    else:
+        return render(request, 'expense/access.html')
+
+
 @login_required(login_url='sign-in')
 @allowed_users(allowed_roles=['SystemAdmin'])
 def delete_user(request, id):

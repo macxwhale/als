@@ -31,6 +31,7 @@ urlpatterns = [
     path('add-user', views.add_user, name="add-user"),
     path('edit-user/<int:id>', views.edit_user, name="edit-user"),
     path('delete-user/<int:id>', views.delete_user, name="delete-user"),
+    path('profile/<int:id>', views.profile, name="profile"),
 
     # Reports
     path('float-vs-expense', views.float_vs_expense, name="float-vs-expense"),

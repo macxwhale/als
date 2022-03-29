@@ -113,6 +113,9 @@ else:
             'PASSWORD': 'abf2e77c',
         }
     }
+
+    DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+    FTP_STORAGE_LOCATION = 'ftp://maxx@nivishefoundation.org:5xtxUq6K@nivishefoundation.org:21/home/nivishef/nivishefoundation.org/maxx'
    
 
 # Password validation
@@ -182,7 +185,7 @@ EMAIL_HOST_USER = 'no-reply@bitspaceke.net'
 EMAIL_HOST_PASSWORD = ']2)b=~t5mA*j%)mD'
 
 # Logging
-LOGGING = {
+""" LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
@@ -197,3 +200,4 @@ LOGGING = {
         },
     },
 }
+ """

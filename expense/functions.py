@@ -45,3 +45,11 @@ def upload_name(instance, filename):
 #     as expense_sum FROM expense_station; 
 # END
 
+
+# USE als_expense;
+# DELIMITER // ;
+# CREATE PROCEDURE `sp_update_profile`(IN usr_id INT, IN user_username varchar(20), IN user_first_name  varchar(20), IN user_last_name varchar(20), IN user_email varchar(20))
+# BEGIN
+# 	UPDATE auth_user SET username = user_username, first_name = user_first_name, last_name = user_last_name, email = user_email WHERE id = usr_id;
+# END 
+
