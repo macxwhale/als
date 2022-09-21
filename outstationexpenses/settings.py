@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-y4xj)*vfwa2tw9cyq*eyif(#jff)s-=9o#9##jp!^qy5nmp+qx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'outstationexpenses.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aslexpenses',
+        'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'PASSWORD': 'tRwyEB7OBZ0jRYAvSC6q',
+        'HOST': 'containers-us-west-67.railway.app',
+        'PORT': '7544',
     }
 }
 
