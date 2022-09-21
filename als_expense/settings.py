@@ -107,10 +107,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': 'us-cdbr-east-05.cleardb.net',
-            'USER': 'b1df1002929fde',
-            'NAME': 'heroku_1cf98780440a033',
-            'PASSWORD': 'abf2e77c',
+            'NAME': 'railway',
+            'USER': 'root',
+            'PASSWORD': 'tRwyEB7OBZ0jRYAvSC6q',
+            'HOST': 'containers-us-west-67.railway.app',
+            'PORT': '7544',
         }
     }
 
